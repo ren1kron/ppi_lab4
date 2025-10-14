@@ -1,4 +1,4 @@
-import { Card, CardContent, CardActions, Button, Grid, Typography, Stack } from "@mui/material";
+import { Card, CardContent, CardActions, Button, Grid, Typography, Stack, Box, Alert, CircularProgress, Paper, Chip, Divider } from "@mui/material";
 import Field from "@components/Field";
 import { useEffect, useState } from "react";
 import { getSummary, kernelDetectGlitch, kernelDetectCandidate } from "@api/client";
@@ -14,60 +14,163 @@ export default function Dashboard() {
   const [mass, setMass] = useState(false);
   const [candName, setCandName] = useState("Subject XYZ-777");
   const [dissent, setDissent] = useState(8.6);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => { getSummary().then(setS); }, []);
+  useEffect(() => {
+    const loadSummary = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const summary = await getSummary();
+        setS(summary);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Ошибка загрузки сводки');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadSummary();
+  }, []);
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
-    <Grid container spacing={2}>
-      <Grid size={12}><Typography variant="h5">Обзор</Typography></Grid>
+    <Box>
+      <Box mb={3}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Панель управления
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Обзор системы и основные операции
+        </Typography>
+      </Box>
 
-      {(has(role,"VIEW_DASHBOARD")) && (
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <Card><CardContent>
-            <Typography variant="h6">Сводка</Typography>
-            <Stack mt={1} spacing={0.5}>
-              <Typography>Открытые инциденты: {s?.openIncidents ?? "…"}</Typography>
-              <Typography>Кандидаты: {s?.candidates ?? "…"}</Typography>
-              <Typography>Сироты: {s?.orphanPrograms ?? "…"}</Typography>
-            </Stack>
-          </CardContent></Card>
-        </Grid>
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
       )}
 
-      {has(role,"KERNEL_CREATE_GLITCH") && (
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Зафиксировать глитч (UC-101)</Typography>
-              <Field label="Заголовок" value={title} onChange={e => setTitle(e.target.value)} />
-              <Field label="Описание" value={desc} onChange={e => setDesc(e.target.value)} />
-              <Field label="Массовый?" value={mass ? "Да" : "Нет"} onClick={() => setMass(!mass)} />
-            </CardContent>
-            <CardActions>
-              <Button variant="contained" onClick={() => kernelDetectGlitch({ title, description: desc, massImpact: mass })}>
-                Создать тикет
-              </Button>
-            </CardActions>
-          </Card>
-        </Grid>
-      )}
+      <Grid container spacing={3}>
+        {(has(role, "VIEW_DASHBOARD")) && (
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <Card sx={{ height: '100%' }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Сводка системы
+                </Typography>
+                <Divider sx={{ my: 2 }} />
+                <Stack spacing={2}>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Открытые инциденты
+                    </Typography>
+                    <Typography variant="h4" color="primary">
+                      {s?.openIncidents ?? "…"}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Кандидаты
+                    </Typography>
+                    <Typography variant="h4" color="secondary">
+                      {s?.candidates ?? "…"}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Программы-сироты
+                    </Typography>
+                    <Typography variant="h4" color="warning.main">
+                      {s?.orphanPrograms ?? "…"}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+        )}
 
-      {has(role,"KERNEL_DETECT_CANDIDATE") && (
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Обнаружить «Кандидата» (UC-201)</Typography>
-              <Field label="Имя" value={candName} onChange={e => setCandName(e.target.value)} />
-              <Field label="Индекс несогласия" type="number" value={dissent} onChange={e => setDissent(Number(e.target.value))} />
-            </CardContent>
-            <CardActions>
-              <Button variant="contained" onClick={() => kernelDetectCandidate(candName, dissent)}>
-                Создать досье
-              </Button>
-            </CardActions>
-          </Card>
-        </Grid>
-      )}
-    </Grid>
+        {has(role, "KERNEL_CREATE_GLITCH") && (
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h6" gutterBottom>
+                  Зафиксировать глитч (UC-101)
+                </Typography>
+                <Divider sx={{ my: 2 }} />
+                <Stack spacing={2}>
+                  <Field label="Заголовок" value={title} onChange={e => setTitle(e.target.value)} />
+                  <Field label="Описание" value={desc} onChange={e => setDesc(e.target.value)} />
+                  <Box>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                      Массовый эффект
+                    </Typography>
+                    <Chip
+                      label={mass ? "Да" : "Нет"}
+                      color={mass ? "error" : "default"}
+                      onClick={() => setMass(!mass)}
+                      clickable
+                    />
+                  </Box>
+                </Stack>
+              </CardContent>
+              <CardActions>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  onClick={() => kernelDetectGlitch({ title, description: desc, massImpact: mass })}
+                >
+                  Создать тикет
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        )}
+
+        {has(role, "KERNEL_DETECT_CANDIDATE") && (
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h6" gutterBottom>
+                  Обнаружить «Кандидата» (UC-201)
+                </Typography>
+                <Divider sx={{ my: 2 }} />
+                <Stack spacing={2}>
+                  <Field label="Имя" value={candName} onChange={e => setCandName(e.target.value)} />
+                  <Field label="Индекс несогласия" type="number" value={dissent} onChange={e => setDissent(Number(e.target.value))} />
+                  <Box>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                      Уровень угрозы
+                    </Typography>
+                    <Chip
+                      label={dissent >= 9.5 ? "Критический" : dissent >= 7.0 ? "Высокий" : "Низкий"}
+                      color={dissent >= 9.5 ? "error" : dissent >= 7.0 ? "warning" : "success"}
+                      size="small"
+                    />
+                  </Box>
+                </Stack>
+              </CardContent>
+              <CardActions>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  onClick={() => kernelDetectCandidate(candName, dissent)}
+                >
+                  Создать досье
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        )}
+      </Grid>
+    </Box>
   );
 }
