@@ -15,7 +15,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     <Box sx={{ display: "flex" }}>
       <AppBar position="fixed">
         <Toolbar sx={{ gap: 2 }}>
-          <Typography variant="h6" sx={{ flex: 1 }}>The Matrix — IS v3.0</Typography>
+          <Typography variant="h6" sx={{ flex: 1 }}>The Matrix</Typography>
           <RoleBadge role={role} />
           <Select size="small" value={role} onChange={e => setRole(e.target.value as Role)} sx={{ color: "inherit" }}>
             {(["ARCHITECT","KERNEL","MONITOR","AGENT_SMITH","ORACLE","KEYMAKER","SENTINEL_CTRL","MECHANIC"] as Role[])
@@ -24,7 +24,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         </Toolbar>
       </AppBar>
 
-      <Drawer variant="permanent" sx={{ width: 240, [`& .MuiDrawer-paper`]: { width: 240, mt: 8 } }}>
+      <Drawer variant="permanent" sx={{ [`& .MuiDrawer-paper`]: { width: 240, mt: 8 } }}>
         <List>
           {visibleMenu.map(m => (
             <ListItemButton key={m.path} selected={location.pathname === m.path} component={Link} to={m.path}>
