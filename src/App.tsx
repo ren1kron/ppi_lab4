@@ -1,14 +1,13 @@
 import { useRoutes } from "react-router-dom";
 import { routes } from "./routes";
 import MainLayout from "@layouts/MainLayout";
-import { useAuthState } from "@auth/useAuth";
+import AuthProvider from "@auth/AuthProvider";
 
 export default function App() {
-  const { role, setRole } = useAuthState();
   const content = useRoutes(routes);
   return (
-    <MainLayout role={role} setRole={setRole}>
-      {content}
-    </MainLayout>
+    <AuthProvider>
+      <MainLayout>{content}</MainLayout>
+    </AuthProvider>
   );
 }

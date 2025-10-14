@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Role } from "../types";
+import { useContext } from "react";
+import { AuthCtx } from "./auth-context";
 
-// очень простой "логин по роли" для демо
-export function useAuthState() {
-  const [role, setRole] = useState<Role>("MONITOR");
-  return { role, setRole };
+export function useAuth() {
+  const ctx = useContext(AuthCtx);
+  if (!ctx) throw new Error("AuthProvider missing");
+  return ctx;
 }
