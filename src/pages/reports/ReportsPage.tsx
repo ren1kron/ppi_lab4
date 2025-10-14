@@ -84,9 +84,9 @@ export default function ReportsPage() {
                 <Paper
                   sx={{
                     p: 2,
-                    backgroundColor: 'grey.50',
+                    backgroundColor: 'black',
                     border: '1px solid',
-                    borderColor: 'grey.200',
+                    borderColor: 'grey.800',
                     borderRadius: 1
                   }}
                 >
@@ -95,7 +95,8 @@ export default function ReportsPage() {
                       whiteSpace: "pre-wrap",
                       fontFamily: 'monospace',
                       fontSize: '0.875rem',
-                      lineHeight: 1.6
+                      lineHeight: 1.6,
+                      color: 'white'
                     }}
                   >
                     {summary}
