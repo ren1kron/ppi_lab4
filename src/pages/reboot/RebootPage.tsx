@@ -52,9 +52,9 @@ export default function RebootPage() {
         <Card>
           <CardContent>
             <Typography variant="h6">UC-303: Подготовка ресурсов</Typography>
-            <Typography variant="body2" color="text.secondary">
+            {/* <Typography variant="body2" color="text.secondary">
               Для демо считаем, что распоряжения Хранителю/Смотрителю/Сентинелям автоматически созданы после выбора.
-            </Typography>
+            </Typography> */}
           </CardContent>
         </Card>
       </Grid>
@@ -64,9 +64,9 @@ export default function RebootPage() {
           <CardContent>
             <Typography variant="h6">UC-304: Финальное интервью</Typography>
             <Typography>Избранный: {chosen?.name ?? "—"}</Typography>
-            <Typography variant="body2" color="text.secondary">
+            {/* <Typography variant="body2" color="text.secondary">
               Здесь фиксируется выбор Избранного. В демо — просто отметка, что интервью состоялось.
-            </Typography>
+            </Typography> */}
           </CardContent>
         </Card>
       </Grid>
