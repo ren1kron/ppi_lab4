@@ -19,10 +19,10 @@ export default function Dashboard() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}><Typography variant="h5">Обзор</Typography></Grid>
+      <Grid size={12}><Typography variant="h5">Обзор</Typography></Grid>
 
       {(has(role,"VIEW_DASHBOARD")) && (
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Card><CardContent>
             <Typography variant="h6">Сводка</Typography>
             <Stack mt={1} spacing={0.5}>
@@ -35,7 +35,7 @@ export default function Dashboard() {
       )}
 
       {has(role,"KERNEL_CREATE_GLITCH") && (
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Card>
             <CardContent>
               <Typography variant="h6">Зафиксировать глитч (UC-101)</Typography>
@@ -53,7 +53,7 @@ export default function Dashboard() {
       )}
 
       {has(role,"KERNEL_DETECT_CANDIDATE") && (
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Card>
             <CardContent>
               <Typography variant="h6">Обнаружить «Кандидата» (UC-201)</Typography>

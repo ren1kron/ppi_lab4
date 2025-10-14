@@ -28,12 +28,12 @@ export default function ReportsPage() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Typography variant="h5">Отчёты</Typography>
       </Grid>
 
       {canViewReports && (
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
               <Typography variant="h6">Ежедневная сводка для Архитектора (UC-105)</Typography>
@@ -44,7 +44,7 @@ export default function ReportsPage() {
       )}
 
       {canViewReports && (
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
               <Typography variant="h6">Стабильность персональных симуляций (UC-404)</Typography>

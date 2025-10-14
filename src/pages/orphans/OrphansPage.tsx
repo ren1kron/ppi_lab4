@@ -46,7 +46,7 @@ export default function OrphansPage() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
+      <Grid size={{ xs: 12 }}>
         <Typography variant="h5">Сироты и Симуляции</Typography>
       </Grid>
 
@@ -56,7 +56,7 @@ export default function OrphansPage() {
         const canCreateSim = has(role, "ORPHANS_VIEW") && has(role, "SIM_CREATE");
 
         return (
-          <Grid item md={4} sm={6} xs={12} key={o.id}>
+          <Grid size={{ md: 4, sm: 6, xs: 12 }} key={o.id}>
             <Card>
               <CardContent>
                 <Typography variant="h6">{o.name}</Typography>
@@ -151,7 +151,7 @@ export default function OrphansPage() {
       })}
 
       {items.length === 0 && (
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Card>
             <CardContent>
               <Typography color="text.secondary">Программ-«Сирот» не найдено</Typography>

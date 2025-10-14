@@ -56,11 +56,11 @@ export default function TicketsPage() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Typography variant="h5">Тикеты</Typography>
       </Grid>
 
-      <Grid item md={5} xs={12}>
+      <Grid size={{ md: 5, xs: 12 }}>
         <Stack spacing={1}>
           {items.length === 0 && (
             <Card>
@@ -96,7 +96,7 @@ export default function TicketsPage() {
         </Stack>
       </Grid>
 
-      <Grid item md={7} xs={12}>
+      <Grid size={{ md: 7, xs: 12 }}>
         {selected ? (
           <Card>
             <CardContent>
