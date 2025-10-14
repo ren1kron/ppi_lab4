@@ -12,9 +12,9 @@ export default function ReportsPage() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}><Typography variant="h5">Отчёты (UC-105, UC-404)</Typography></Grid>
+      <Grid size={12}><Typography variant="h5">Отчёты (UC-105, UC-404)</Typography></Grid>
 
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Card>
           <CardContent>
             <Typography variant="h6">Ежедневная сводка для Архитектора (UC-105)</Typography>
@@ -23,7 +23,7 @@ export default function ReportsPage() {
         </Card>
       </Grid>
 
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Card>
           <CardContent>
             <Typography variant="h6">Стабильность персональных симуляций (UC-404)</Typography>
@@ -38,7 +38,7 @@ export default function ReportsPage() {
                     <Typography variant="caption">Отчёт: {new Date(s.lastReportAt).toLocaleString()}</Typography>
                   </CardContent>
                   <CardActions>
-                    <Button onClick={() => simulationReport(s.id).then(()=>reload())}>Обновить отчёт</Button>
+                    <Button onClick={() => simulationReport(s.id).then(() => reload())}>Обновить отчёт</Button>
                   </CardActions>
                 </Card>
               ))}

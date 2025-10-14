@@ -14,10 +14,10 @@ export default function OrphansPage() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}><Typography variant="h5">Сироты и Симуляции (UC-401..404, 403)</Typography></Grid>
+      <Grid size={12}><Typography variant="h5">Сироты и Симуляции (UC-401..404, 403)</Typography></Grid>
 
       {items.map(o => (
-        <Grid item md={4} sm={6} xs={12} key={o.id}>
+        <Grid size={{ md: 4, sm: 6, xs: 12 }} key={o.id}>
           <Card>
             <CardContent>
               <Typography variant="h6">{o.name}</Typography>
@@ -32,8 +32,8 @@ export default function OrphansPage() {
                 <Button color="warning" onClick={() => decideOrphan(o.id, "Delete").then(reload)}>Удалить (UC-402)</Button>
               </Stack>
               <Stack direction="row" spacing={1} alignItems="center" mt={1}>
-                <TextField size="small" label="Название симуляции" value={title} onChange={e=>setTitle(e.target.value)} />
-                <TextField size="small" label="Ресурсы" type="number" value={res} onChange={e=>setRes(Number(e.target.value))} sx={{ width:120 }} />
+                <TextField size="small" label="Название симуляции" value={title} onChange={e => setTitle(e.target.value)} />
+                <TextField size="small" label="Ресурсы" type="number" value={res} onChange={e => setRes(Number(e.target.value))} sx={{ width: 120 }} />
                 <Button variant="contained" onClick={() => createPersonalSimulation(o.id, title, res).then(reload)}>Создать (UC-403)</Button>
               </Stack>
             </CardContent>
