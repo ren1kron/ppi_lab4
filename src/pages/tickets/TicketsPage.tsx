@@ -38,7 +38,7 @@ import { has } from "@auth/permissions";
 
 export default function TicketsPage() {
   const { user } = useAuth();
-  
+
   if (!user) return null;
 
   const [items, setItems] = useState<Ticket[]>([]);
