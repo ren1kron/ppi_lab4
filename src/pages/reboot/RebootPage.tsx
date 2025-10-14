@@ -13,9 +13,9 @@ export default function RebootPage() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}><Typography variant="h5">Цикл перезагрузки (UC-301..304)</Typography></Grid>
+      <Grid size={12}><Typography variant="h5">Цикл перезагрузки (UC-301..304)</Typography></Grid>
 
-      <Grid item md={6} xs={12}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <Card>
           <CardContent>
             <Typography variant="h6">UC-301: Инициация аудита</Typography>
@@ -28,7 +28,7 @@ export default function RebootPage() {
         </Card>
       </Grid>
 
-      <Grid item md={6} xs={12}>
+      <Grid size={{ md: 6, xs: 12 }}>
         <Card>
           <CardContent>
             <Typography variant="h6">UC-302: Выбор «Избранного»</Typography>
@@ -38,7 +38,7 @@ export default function RebootPage() {
                   key={p.id}
                   value={p.id}
                   control={<Radio />}
-                  label={`${p.name} — шанс ${Math.round(p.probabilityOfSuccess*100)}%`} />
+                  label={`${p.name} — шанс ${Math.round(p.probabilityOfSuccess * 100)}%`} />
               ))}
             </RadioGroup>
           </CardContent>
@@ -48,7 +48,7 @@ export default function RebootPage() {
         </Card>
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Card>
           <CardContent>
             <Typography variant="h6">UC-303: Подготовка ресурсов</Typography>
@@ -59,7 +59,7 @@ export default function RebootPage() {
         </Card>
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Card>
           <CardContent>
             <Typography variant="h6">UC-304: Финальное интервью</Typography>

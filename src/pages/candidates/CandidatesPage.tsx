@@ -11,14 +11,14 @@ export default function CandidatesPage() {
   const [forecast, setForecast] = useState<Forecast | null>(null);
 
   const reload = () => { void listCandidates().then(setItems); };
-  useEffect(() => { reload(); }, []);      
+  useEffect(() => { reload(); }, []);
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}><Typography variant="h5">Кандидаты (UC-201..204, 203)</Typography></Grid>
+      <Grid size={12}><Typography variant="h5">Кандидаты (UC-201..204, 203)</Typography></Grid>
 
       {items.map(c => (
-        <Grid item md={4} sm={6} xs={12} key={c.id}>
+        <Grid size={{ md: 4, sm: 6, xs: 12 }} key={c.id}>
           <Card>
             <CardContent>
               <Stack direction="row" justifyContent="space-between">

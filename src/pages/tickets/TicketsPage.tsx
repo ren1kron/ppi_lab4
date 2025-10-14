@@ -18,18 +18,18 @@ export default function TicketsPage() {
   const [note, setNote] = useState("");
 
   const reload = () => { void listTickets().then(setItems); };
-  useEffect(() => { reload(); }, []);      
+  useEffect(() => { reload(); }, []);
 
-  useEffect(() => { if (selected) { setSeverity(selected.severity); setAssignTo((selected.assigneeRole ?? "MECHANIC") as Role); }}, [selected]);
+  useEffect(() => { if (selected) { setSeverity(selected.severity); setAssignTo((selected.assigneeRole ?? "MECHANIC") as Role); } }, [selected]);
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}><Typography variant="h5">Тикеты (UC-102..107, 104, 205)</Typography></Grid>
+      <Grid size={12}><Typography variant="h5">Тикеты (UC-102..107, 104, 205)</Typography></Grid>
 
-      <Grid item md={5} xs={12}>
+      <Grid size={{ md: 5, xs: 12 }}>
         <Stack spacing={1}>
           {items.map(t => (
-            <Card key={t.id} onClick={() => setSelected(t)} sx={{ cursor: "pointer", border: selected?.id===t.id ? "2px solid #00e5ff" : undefined }}>
+            <Card key={t.id} onClick={() => setSelected(t)} sx={{ cursor: "pointer", border: selected?.id === t.id ? "2px solid #00e5ff" : undefined }}>
               <CardContent>
                 <Stack direction="row" justifyContent="space-between" alignItems="center">
                   <Typography variant="subtitle1">{t.title}</Typography>
@@ -46,7 +46,7 @@ export default function TicketsPage() {
         </Stack>
       </Grid>
 
-      <Grid item md={7} xs={12}>
+      <Grid size={{ md: 7, xs: 12 }}>
         {selected ? (
           <Card>
             <CardContent>
@@ -70,7 +70,7 @@ export default function TicketsPage() {
                 }>Применить</Button>
               </Stack>
 
-              <TextField fullWidth label="Комментарий / Патч / Отчёт" size="small" value={note} onChange={e=>setNote(e.target.value)} />
+              <TextField fullWidth label="Комментарий / Патч / Отчёт" size="small" value={note} onChange={e => setNote(e.target.value)} />
 
               <Stack direction="row" spacing={1} mt={2} flexWrap="wrap">
                 {/* UC-106: эскалация Архитектору */}
