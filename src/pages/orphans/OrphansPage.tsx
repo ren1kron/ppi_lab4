@@ -15,7 +15,12 @@ import {
   Grid,
   Typography,
   Stack,
-  TextField
+  TextField,
+  Box,
+  Divider,
+  Chip,
+  Alert,
+  CircularProgress
 } from "@mui/material";
 import { useAuth } from "@auth/useAuth";
 import { has } from "@auth/permissions";
@@ -25,16 +30,25 @@ export default function OrphansPage() {
 
   const [items, setItems] = useState<OrphanProgram[]>([]);
   const [sims, setSims] = useState<Simulation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // локальное состояние полей создания симуляции — по каждому сироте
   const [simTitle, setSimTitle] = useState<Record<string, string>>({});
   const [simRes, setSimRes] = useState<Record<string, number>>({});
 
-  const reload = () => {
-    void Promise.all([listOrphans(), listSimulations()]).then(([o, s]) => {
+  const reload = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const [o, s] = await Promise.all([listOrphans(), listSimulations()]);
       setItems(o);
       setSims(s);
-    });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Ошибка загрузки данных');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -44,121 +58,223 @@ export default function OrphansPage() {
   const getTitle = (id: string) => simTitle[id] ?? "Персональная симуляция";
   const getRes = (id: string) => simRes[id] ?? 10;
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Saved': return 'success';
+      case 'Deleted': return 'error';
+      default: return 'default';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'Saved': return 'Сохранена';
+      case 'Deleted': return 'Удалена';
+      default: return status;
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
-    <Grid container spacing={2}>
-      <Grid size={{ xs: 12 }}>
-        <Typography variant="h5">Сироты и Симуляции</Typography>
-      </Grid>
+    <Box>
+      <Box mb={3}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Сироты и Симуляции
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Управление программами-сиротами и их персональными симуляциями
+        </Typography>
+      </Box>
 
-      {items.map((o) => {
-        const sim = o.simulationId ? sims.find((s) => s.id === o.simulationId) : undefined;
-        const canDecide = has(role, "ORPHANS_VIEW") && has(role, "ORPHAN_DECIDE");
-        const canCreateSim = has(role, "ORPHANS_VIEW") && has(role, "SIM_CREATE");
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
 
-        return (
-          <Grid size={{ md: 4, sm: 6, xs: 12 }} key={o.id}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">{o.name}</Typography>
-                <Typography variant="caption" display="block" gutterBottom>
-                  Статус: {o.status}
-                </Typography>
+      <Grid container spacing={3}>
+        {items.map((o) => {
+          const sim = o.simulationId ? sims.find((s) => s.id === o.simulationId) : undefined;
+          const canDecide = has(role, "ORPHANS_VIEW") && has(role, "ORPHAN_DECIDE");
+          const canCreateSim = has(role, "ORPHANS_VIEW") && has(role, "SIM_CREATE");
 
-                {sim && (
-                  <Stack spacing={0.5} sx={{ mt: 1 }}>
-                    <Typography variant="subtitle2">Симуляция</Typography>
-                    <Typography variant="body2">Название: {sim.title}</Typography>
-                    <Typography variant="body2">Stability: {sim.stability.toFixed(1)} / 100</Typography>
-                    <Typography variant="body2">Resources: {sim.resources}</Typography>
-                    <Typography variant="body2">Activity: {sim.activityScore.toFixed(1)} / 100</Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      Отчёт: {new Date(sim.lastReportAt).toLocaleString()}
+          return (
+            <Grid size={{ md: 4, sm: 6, xs: 12 }} key={o.id}>
+              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Stack direction="row" justifyContent="space-between" alignItems="flex-start" mb={2}>
+                    <Typography variant="h6" component="h3">
+                      {o.name}
                     </Typography>
+                    <Chip
+                      label={getStatusLabel(o.status)}
+                      color={getStatusColor(o.status) as any}
+                      size="small"
+                    />
                   </Stack>
-                )}
+
+                  {sim && (
+                    <>
+                      <Divider sx={{ my: 2 }} />
+                      <Box>
+                        <Typography variant="subtitle2" gutterBottom color="primary">
+                          Активная симуляция
+                        </Typography>
+                        <Stack spacing={1}>
+                          <Box>
+                            <Typography variant="body2" fontWeight="medium">
+                              {sim.title}
+                            </Typography>
+                          </Box>
+                          <Stack direction="row" spacing={2} flexWrap="wrap">
+                            <Box>
+                              <Typography variant="caption" color="text.secondary">
+                                Стабильность
+                              </Typography>
+                              <Typography variant="body2" fontWeight="medium">
+                                {sim.stability.toFixed(1)}/100
+                              </Typography>
+                            </Box>
+                            <Box>
+                              <Typography variant="caption" color="text.secondary">
+                                Ресурсы
+                              </Typography>
+                              <Typography variant="body2" fontWeight="medium">
+                                {sim.resources}
+                              </Typography>
+                            </Box>
+                            <Box>
+                              <Typography variant="caption" color="text.secondary">
+                                Активность
+                              </Typography>
+                              <Typography variant="body2" fontWeight="medium">
+                                {sim.activityScore.toFixed(1)}/100
+                              </Typography>
+                            </Box>
+                          </Stack>
+                          <Typography variant="caption" color="text.secondary">
+                            Последний отчёт: {new Date(sim.lastReportAt).toLocaleString()}
+                          </Typography>
+                        </Stack>
+                      </Box>
+                    </>
+                  )}
+                </CardContent>
+
+                <CardActions sx={{ flexDirection: "column", alignItems: "stretch", gap: 2, p: 2 }}>
+                  {/* UC-402 — решение по сироте: MONITOR */}
+                  {canDecide && (
+                    <Box>
+                      <Typography variant="subtitle2" gutterBottom color="text.secondary">
+                        Решение по программе (UC-402)
+                      </Typography>
+                      <Stack direction="row" spacing={1} flexWrap="wrap">
+                        <Button
+                          variant="outlined"
+                          color="success"
+                          onClick={() => void decideOrphan(o.id, "Save").then(reload)}
+                          disabled={o.status === "Saved"}
+                          size="small"
+                        >
+                          Сохранить
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          onClick={() => void decideOrphan(o.id, "Delete").then(reload)}
+                          disabled={o.status === "Deleted"}
+                          size="small"
+                        >
+                          Удалить
+                        </Button>
+                      </Stack>
+                    </Box>
+                  )}
+
+                  {/* UC-403 — создание персональной симуляции: KEYMAKER */}
+                  {canCreateSim && (
+                    <Box>
+                      <Typography variant="subtitle2" gutterBottom color="text.secondary">
+                        Создание симуляции (UC-403)
+                      </Typography>
+                      <Stack spacing={2}>
+                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+                          <TextField
+                            size="small"
+                            label="Название симуляции"
+                            value={getTitle(o.id)}
+                            onChange={(e) =>
+                              setSimTitle((m) => ({ ...m, [o.id]: e.target.value }))
+                            }
+                            sx={{ flexGrow: 1 }}
+                          />
+                          <TextField
+                            size="small"
+                            label="Ресурсы"
+                            type="number"
+                            value={getRes(o.id)}
+                            onChange={(e) =>
+                              setSimRes((m) => ({
+                                ...m,
+                                [o.id]: Number(e.target.value || 0)
+                              }))
+                            }
+                            sx={{ width: { xs: '100%', sm: 120 } }}
+                            inputProps={{ min: 1 }}
+                          />
+                        </Stack>
+                        <Button
+                          variant="contained"
+                          onClick={() =>
+                            void createPersonalSimulation(o.id, getTitle(o.id), getRes(o.id)).then(
+                              reload
+                            )
+                          }
+                          disabled={o.status !== "Saved" || Boolean(o.simulationId)}
+                          fullWidth
+                        >
+                          Создать симуляцию
+                        </Button>
+                      </Stack>
+                    </Box>
+                  )}
+
+                  {/* Подсказка условий для KEYMAKER */}
+                  {canCreateSim && (o.status !== "Saved" || o.simulationId) && (
+                    <Alert severity="info" sx={{ mt: 1 }}>
+                      <Typography variant="caption">
+                        Для создания симуляции программа должна быть «Сохранена» и без существующей симуляции.
+                      </Typography>
+                    </Alert>
+                  )}
+                </CardActions>
+              </Card>
+            </Grid>
+          );
+        })}
+
+        {items.length === 0 && (
+          <Grid size={{ xs: 12 }}>
+            <Card>
+              <CardContent sx={{ textAlign: 'center', py: 4 }}>
+                <Typography variant="h6" color="text.secondary" gutterBottom>
+                  Программ-сирот не найдено
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  В системе пока нет программ-сирот для управления
+                </Typography>
               </CardContent>
-
-              <CardActions sx={{ flexDirection: "column", alignItems: "stretch", gap: 1 }}>
-                {/* UC-402 — решение по сироте: MONITOR */}
-                {canDecide && (
-                  <Stack direction="row" spacing={1}>
-                    <Button
-                      onClick={() => void decideOrphan(o.id, "Save").then(reload)}
-                      disabled={o.status === "Saved"}
-                    >
-                      Сохранить (UC-402)
-                    </Button>
-                    <Button
-                      color="warning"
-                      onClick={() => void decideOrphan(o.id, "Delete").then(reload)}
-                      disabled={o.status === "Deleted"}
-                    >
-                      Удалить (UC-402)
-                    </Button>
-                  </Stack>
-                )}
-
-                {/* UC-403 — создание персональной симуляции: KEYMAKER */}
-                {canCreateSim && (
-                  <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-                    <TextField
-                      size="small"
-                      label="Название симуляции"
-                      value={getTitle(o.id)}
-                      onChange={(e) =>
-                        setSimTitle((m) => ({ ...m, [o.id]: e.target.value }))
-                      }
-                      sx={{ minWidth: 220 }}
-                    />
-                    <TextField
-                      size="small"
-                      label="Ресурсы"
-                      type="number"
-                      value={getRes(o.id)}
-                      onChange={(e) =>
-                        setSimRes((m) => ({
-                          ...m,
-                          [o.id]: Number(e.target.value || 0)
-                        }))
-                      }
-                      sx={{ width: 120 }}
-                      inputProps={{ min: 1 }}
-                    />
-                    <Button
-                      variant="contained"
-                      onClick={() =>
-                        void createPersonalSimulation(o.id, getTitle(o.id), getRes(o.id)).then(
-                          reload
-                        )
-                      }
-                      disabled={o.status !== "Saved" || Boolean(o.simulationId)}
-                    >
-                      Создать (UC-403)
-                    </Button>
-                  </Stack>
-                )}
-
-                {/* Подсказка условий для KEYMAKER */}
-                {canCreateSim && (o.status !== "Saved" || o.simulationId) && (
-                  <Typography variant="caption" color="text.secondary">
-                    Для создания симуляции программа должна быть «Saved» и без существующей симуляции.
-                  </Typography>
-                )}
-              </CardActions>
             </Card>
           </Grid>
-        );
-      })}
-
-      {items.length === 0 && (
-        <Grid size={{ xs: 12 }}>
-          <Card>
-            <CardContent>
-              <Typography color="text.secondary">Программ-«Сирот» не найдено</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      )}
-    </Grid>
+        )}
+      </Grid>
+    </Box>
   );
 }
