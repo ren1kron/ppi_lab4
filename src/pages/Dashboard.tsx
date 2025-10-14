@@ -16,9 +16,9 @@ export default function Dashboard() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}><Typography variant="h5">Обзор</Typography></Grid>
+      <Grid size={12}><Typography variant="h5">Обзор</Typography></Grid>
 
-      <Grid item xs={12} sm={6} md={4}>
+      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Card>
           <CardContent>
             <Typography variant="h6">Сводка</Typography>
@@ -32,7 +32,7 @@ export default function Dashboard() {
       </Grid>
 
       {/* UC-101: Kernel creates glitch */}
-      <Grid item xs={12} sm={6} md={4}>
+      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Card>
           <CardContent>
             <Typography variant="h6">Зафиксировать глитч (UC-101)</Typography>
@@ -41,7 +41,7 @@ export default function Dashboard() {
             <Field label="Массовый?" value={mass ? "Да" : "Нет"} onClick={() => setMass(!mass)} />
           </CardContent>
           <CardActions>
-            <Button variant="contained" onClick={() => kernelDetectGlitch({ title, description: desc, massImpact: mass }).then(()=>getSummary().then(setS))}>
+            <Button variant="contained" onClick={() => kernelDetectGlitch({ title, description: desc, massImpact: mass }).then(() => getSummary().then(setS))}>
               Создать тикет (назначить Смотрителю)
             </Button>
           </CardActions>
@@ -49,7 +49,7 @@ export default function Dashboard() {
       </Grid>
 
       {/* UC-201: Kernel detect candidate */}
-      <Grid item xs={12} sm={6} md={4}>
+      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <Card>
           <CardContent>
             <Typography variant="h6">Обнаружить «Кандидата» (UC-201)</Typography>
@@ -57,7 +57,7 @@ export default function Dashboard() {
             <Field label="Индекс несогласия" type="number" value={dissent} onChange={e => setDissent(Number(e.target.value))} />
           </CardContent>
           <CardActions>
-            <Button variant="contained" onClick={() => kernelDetectCandidate(candName, dissent).then(()=>getSummary().then(setS))}>
+            <Button variant="contained" onClick={() => kernelDetectCandidate(candName, dissent).then(() => getSummary().then(setS))}>
               Создать досье и уведомления
             </Button>
           </CardActions>
