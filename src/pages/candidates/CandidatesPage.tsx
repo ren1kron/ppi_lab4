@@ -10,8 +10,8 @@ export default function CandidatesPage() {
   const [items, setItems] = useState<Candidate[]>([]);
   const [forecast, setForecast] = useState<Forecast | null>(null);
 
-  const reload = () => listCandidates().then(setItems);
-  useEffect(reload, []);
+  const reload = () => { void listCandidates().then(setItems); };
+  useEffect(() => { reload(); }, []);      
 
   return (
     <Grid container spacing={2}>
