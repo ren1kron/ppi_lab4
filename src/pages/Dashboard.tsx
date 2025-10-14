@@ -7,7 +7,9 @@ import { useAuth } from "@auth/useAuth";
 import { has } from "@auth/permissions";
 
 export default function Dashboard() {
-  const { role } = useAuth();
+  const { user } = useAuth();
+  
+  if (!user) return null;
   const [s, setS] = useState<AppSummary | null>(null);
   const [title, setTitle] = useState("Глитч текстуры");
   const [desc, setDesc] = useState("Рябь стен");
@@ -59,7 +61,7 @@ export default function Dashboard() {
       )}
 
       <Grid container spacing={3}>
-        {(has(role, "VIEW_DASHBOARD")) && (
+        {(has(user.role, "VIEW_DASHBOARD")) && (
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Card sx={{ height: '100%' }}>
               <CardContent>
@@ -98,7 +100,7 @@ export default function Dashboard() {
           </Grid>
         )}
 
-        {has(role, "KERNEL_CREATE_GLITCH") && (
+        {has(user.role, "KERNEL_CREATE_GLITCH") && (
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ flexGrow: 1 }}>
@@ -135,7 +137,7 @@ export default function Dashboard() {
           </Grid>
         )}
 
-        {has(role, "KERNEL_DETECT_CANDIDATE") && (
+        {has(user.role, "KERNEL_DETECT_CANDIDATE") && (
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ flexGrow: 1 }}>

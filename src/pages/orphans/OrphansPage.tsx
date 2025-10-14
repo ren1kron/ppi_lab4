@@ -26,7 +26,9 @@ import { useAuth } from "@auth/useAuth";
 import { has } from "@auth/permissions";
 
 export default function OrphansPage() {
-  const { role } = useAuth();
+  const { user } = useAuth();
+  
+  if (!user) return null;
 
   const [items, setItems] = useState<OrphanProgram[]>([]);
   const [sims, setSims] = useState<Simulation[]>([]);
@@ -102,8 +104,8 @@ export default function OrphansPage() {
       <Grid container spacing={3}>
         {items.map((o) => {
           const sim = o.simulationId ? sims.find((s) => s.id === o.simulationId) : undefined;
-          const canDecide = has(role, "ORPHANS_VIEW") && has(role, "ORPHAN_DECIDE");
-          const canCreateSim = has(role, "ORPHANS_VIEW") && has(role, "SIM_CREATE");
+          const canDecide = has(user.role, "ORPHANS_VIEW") && has(user.role, "ORPHAN_DECIDE");
+          const canCreateSim = has(user.role, "ORPHANS_VIEW") && has(user.role, "SIM_CREATE");
 
           return (
             <Grid size={{ md: 4, sm: 6, xs: 12 }} key={o.id}>

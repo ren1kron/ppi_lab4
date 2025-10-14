@@ -13,7 +13,9 @@ import { useAuth } from "@auth/useAuth";
 import { has } from "@auth/permissions";
 
 export default function CandidatesPage() {
-  const { role } = useAuth();
+  const { user } = useAuth();
+  
+  if (!user) return null;
 
   const [items, setItems] = useState<Candidate[]>([]);
   const [forecast, setForecast] = useState<Forecast | null>(null);
@@ -181,7 +183,7 @@ export default function CandidatesPage() {
                 </Typography>
                 <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
                   {/* UC-202: запрос прогноза — Агент Смит или Оракул */}
-                  {has(role, "CANDIDATE_FORECAST") && (
+                  {has(user.role, "CANDIDATE_FORECAST") && (
                     <Button
                       variant="outlined"
                       onClick={() => void oracleForecast(c.id).then(setForecast)}
@@ -191,7 +193,7 @@ export default function CandidatesPage() {
                   )}
 
                   {/* UC-203: синяя таблетка — Агент Смит */}
-                  {has(role, "CANDIDATE_BLUE_PILL") && (
+                  {has(user.role, "CANDIDATE_BLUE_PILL") && (
                     <Button
                       variant="outlined"
                       color="primary"
@@ -202,7 +204,7 @@ export default function CandidatesPage() {
                   )}
 
                   {/* UC-204: запрос удара — Смотритель */}
-                  {has(role, "SENTINEL_STRIKE_REQUEST") && (
+                  {has(user.role, "SENTINEL_STRIKE_REQUEST") && (
                     <Button
                       variant="outlined"
                       color="error"
@@ -213,7 +215,7 @@ export default function CandidatesPage() {
                   )}
 
                   {/* Демо-действие: отметить как «Проснувшийся» — показываем тем, у кого есть действия над кандидатами */}
-                  {(has(role, "CANDIDATE_FORECAST") || has(role, "CANDIDATE_BLUE_PILL")) && (
+                  {(has(user.role, "CANDIDATE_FORECAST") || has(user.role, "CANDIDATE_BLUE_PILL")) && (
                     <Button
                       variant="contained"
                       color="secondary"

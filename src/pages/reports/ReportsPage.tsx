@@ -7,7 +7,9 @@ import { useAuth } from "@auth/useAuth";
 import { has } from "@auth/permissions";
 
 export default function ReportsPage() {
-  const { role } = useAuth();
+  const { user } = useAuth();
+  
+  if (!user) return null;
 
   const [summary, setSummary] = useState<string>("…");
   const [sims, setSims] = useState<Simulation[]>([]);
@@ -32,8 +34,8 @@ export default function ReportsPage() {
     reload();
   }, []);
 
-  const canViewReports = has(role, "REPORTS_VIEW");
-  const canRefreshSimReport = has(role, "SIM_REPORT_REFRESH"); // обычно только MONITOR
+  const canViewReports = has(user.role, "REPORTS_VIEW");
+  const canRefreshSimReport = has(user.role, "SIM_REPORT_REFRESH"); // обычно только MONITOR
 
   const getStabilityColor = (stability: number) => {
     if (stability >= 80) return "success";

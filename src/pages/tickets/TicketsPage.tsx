@@ -37,7 +37,9 @@ import { useAuth } from "@auth/useAuth";
 import { has } from "@auth/permissions";
 
 export default function TicketsPage() {
-  const { role } = useAuth();
+  const { user } = useAuth();
+  
+  if (!user) return null;
 
   const [items, setItems] = useState<Ticket[]>([]);
   const [selected, setSelected] = useState<Ticket | null>(null);
@@ -204,7 +206,7 @@ export default function TicketsPage() {
                 <Divider sx={{ my: 2 }} />
 
                 {/* UC-102 — классификация и назначение (MONITOR) */}
-                {has(role, "TICKET_CLASSIFY") && (
+                {has(user.role, "TICKET_CLASSIFY") && (
                   <Box mb={3}>
                     <Typography variant="subtitle2" gutterBottom color="text.secondary">
                       Классификация и назначение (UC-102)
@@ -262,7 +264,7 @@ export default function TicketsPage() {
                 </Typography>
                 <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
                   {/* UC-106 — эскалация Архитектору (MONITOR) */}
-                  {has(role, "TICKET_ESCALATE") && (
+                  {has(user.role, "TICKET_ESCALATE") && (
                     <Button
                       variant="outlined"
                       color="warning"
@@ -273,7 +275,7 @@ export default function TicketsPage() {
                   )}
 
                   {/* UC-107 — решение Архитектора (ARCHITECT) */}
-                  {has(role, "TICKET_DECIDE") && (
+                  {has(user.role, "TICKET_DECIDE") && (
                     <>
                       <Button
                         variant="outlined"
@@ -300,7 +302,7 @@ export default function TicketsPage() {
                   )}
 
                   {/* UC-103 — фикс Механика (MECHANIC) */}
-                  {has(role, "TICKET_FIX") && (
+                  {has(user.role, "TICKET_FIX") && (
                     <Button
                       variant="contained"
                       color="primary"
@@ -311,7 +313,7 @@ export default function TicketsPage() {
                   )}
 
                   {/* UC-104 — завершение Агентом (AGENT_SMITH) */}
-                  {has(role, "TICKET_AGENT_COMPLETE") && (
+                  {has(user.role, "TICKET_AGENT_COMPLETE") && (
                     <Button
                       variant="contained"
                       color="secondary"
@@ -322,7 +324,7 @@ export default function TicketsPage() {
                   )}
 
                   {/* UC-205 — запрос подкрепления (AGENT_SMITH) */}
-                  {has(role, "TICKET_REQUEST_REINFORCEMENT") && (
+                  {has(user.role, "TICKET_REQUEST_REINFORCEMENT") && (
                     <Button
                       variant="outlined"
                       color="warning"
@@ -333,7 +335,7 @@ export default function TicketsPage() {
                   )}
 
                   {/* Закрытие тикета (MONITOR) */}
-                  {has(role, "TICKET_CLOSE") && (
+                  {has(user.role, "TICKET_CLOSE") && (
                     <Button
                       variant="contained"
                       color="success"
