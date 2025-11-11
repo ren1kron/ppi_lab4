@@ -1,5 +1,5 @@
 // src/pages/tickets/TicketsPage.tsx
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   listTickets,
   monitorClassifyAndAssign,
@@ -14,7 +14,6 @@ import {
   Box,
   Button,
   Card,
-  CardActions,
   CardContent,
   Grid,
   MenuItem,
@@ -22,7 +21,6 @@ import {
   Stack,
   Typography,
   TextField,
-  Chip,
   Alert,
   CircularProgress,
   Divider,
@@ -49,9 +47,6 @@ import {
 
 export default function TicketsPage() {
   const { user } = useAuth();
-
-  if (!user) return null;
-
   const [items, setItems] = useState<Ticket[]>([]);
   const [selected, setSelected] = useState<Ticket | null>(null);
   const [severity, setSeverity] = useState<Severity>(1);
@@ -63,7 +58,7 @@ export default function TicketsPage() {
   const [filterStatus, setFilterStatus] = useState<string>("ALL");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  const reload = async () => {
+  const reload = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -74,11 +69,11 @@ export default function TicketsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     reload();
-  }, []);
+  }, [reload]);
 
   useEffect(() => {
     if (selected) {
@@ -88,7 +83,9 @@ export default function TicketsPage() {
     }
   }, [selected]);
 
-  const handleAction = async (action: () => Promise<any>, actionName: string, successMessage: string) => {
+  if (!user) return null;
+
+  const handleAction = async (action: () => Promise<unknown>, actionName: string, successMessage: string) => {
     if (!selected) return;
 
     try {
@@ -106,27 +103,29 @@ export default function TicketsPage() {
   };
 
   // Функции проверки доступности действий
-  const canClassify = selected && has(user.role, "TICKET_CLASSIFY") &&
-      selected.status !== "CLOSED" && selected.status !== "DONE";
-
-  const canEscalate = selected && has(user.role, "TICKET_ESCALATE") &&
-      selected.status !== "CLOSED" && selected.status !== "DONE" && selected.status !== "ESCALATED";
-
-  const canDecide = selected && has(user.role, "TICKET_DECIDE") &&
-      selected.status === "ESCALATED";
-
-  const canFix = selected && has(user.role, "TICKET_FIX") &&
-      selected.status === "IN_PROGRESS" && selected.assigneeRole === "MECHANIC";
-
-  const canAgentComplete = selected && has(user.role, "TICKET_AGENT_COMPLETE") &&
-      selected.status === "IN_PROGRESS" && selected.assigneeRole === "AGENT_SMITH";
-
-  const canRequestReinforcement = selected && has(user.role, "TICKET_REQUEST_REINFORCEMENT") &&
-      selected.status === "IN_PROGRESS" && selected.assigneeRole === "AGENT_SMITH";
-
-  const canClose = selected && has(user.role, "TICKET_CLOSE") &&
-      (selected.status === "FIXED" || selected.status === "DONE") &&
-      selected.status !== "CLOSED";
+      // явно привести статус к общему типу, чтобы TS не сузил его до несовместимого подмножества
+      const s = selected ? (selected.status as TicketStatus) : null;
+  
+      const canClassify = !!selected && has(user.role, "TICKET_CLASSIFY") &&
+          s !== null && s !== "CLOSED" && s !== "DONE";
+  
+    const canEscalate = !!selected && has(user.role, "TICKET_ESCALATE") &&
+        s !== null && s !== "CLOSED" && s !== "DONE" && s !== "ESCALATED";
+  
+    const canDecide = !!selected && has(user.role, "TICKET_DECIDE") &&
+        s === "ESCALATED";
+  
+    const canFix = !!selected && has(user.role, "TICKET_FIX") &&
+        s === "IN_PROGRESS" && selected.assigneeRole === "MECHANIC";
+  
+    const canAgentComplete = !!selected && has(user.role, "TICKET_AGENT_COMPLETE") &&
+        s === "IN_PROGRESS" && selected.assigneeRole === "AGENT_SMITH";
+  
+    const canRequestReinforcement = !!selected && has(user.role, "TICKET_REQUEST_REINFORCEMENT") &&
+        s === "IN_PROGRESS" && selected.assigneeRole === "AGENT_SMITH";
+  
+    const canClose = !!selected && has(user.role, "TICKET_CLOSE") &&
+        (s === "FIXED" || s === "DONE");
 
   const filteredItems = items.filter(item =>
       filterStatus === "ALL" || item.status === filterStatus
