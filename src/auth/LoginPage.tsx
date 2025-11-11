@@ -12,7 +12,6 @@ import {
   Alert,
   Card,
   CardContent,
-  CardActions,
   Container,
 } from "@mui/material";
 import { Role } from "../types";
@@ -24,11 +23,11 @@ interface LoginPageProps {
 const roleDescriptions: Record<Role, string> = {
   ARCHITECT: "Архитектор - управляет системой и принимает критические решения",
   KERNEL: "Ядро - создает глитчи и обнаруживает кандидатов",
-  MONITOR: "Монитор - классифицирует и эскалирует тикеты",
+  MONITOR: "Смотритель - классифицирует и эскалирует тикеты",
   AGENT_SMITH: "Агент Смит - выполняет задания и анализирует кандидатов",
   ORACLE: "Оракул - предсказывает судьбы кандидатов",
   KEYMAKER: "Ключник - работает с программами-сиротами",
-  SENTINEL_CTRL: "Контроллер Сентинел - управляет защитными системами",
+  SENTINEL_CTRL: "Контроллер Сентинелей - управляет защитными системами",
   MECHANIC: "Механик - исправляет технические проблемы",
 };
 
@@ -50,7 +49,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth={false} disableGutters sx={{ minHeight: "100vh" }}>
       <Box
         sx={{
           minHeight: "100vh",
@@ -114,14 +113,11 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
                 onChange={(e) => setRole(e.target.value as Role)}
                 label="Роль"
               >
-                {Object.entries(roleDescriptions).map(([roleKey, description]) => (
+                {Object.entries(roleDescriptions).map(([roleKey]) => (
                   <MenuItem key={roleKey} value={roleKey}>
                     <Box>
                       <Typography variant="body1" fontWeight="medium">
                         {roleKey}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {description}
                       </Typography>
                     </Box>
                   </MenuItem>
