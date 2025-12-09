@@ -90,7 +90,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                                 color="inherit"
                                 onClick={logout}
                                 title="Выйти из системы"
-                                size="small"
+                                size="medium"
                                 sx={{
                                     '&:hover': {
                                         backgroundColor: 'rgba(0, 255, 65, 0.1)'

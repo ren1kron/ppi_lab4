@@ -20,7 +20,11 @@ import {
   Divider,
   Chip,
   Alert,
-  CircularProgress
+  CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from "@mui/material";
 import { useAuth } from "@auth/useAuth";
 import { has } from "@auth/permissions";
@@ -34,6 +38,7 @@ export default function OrphansPage() {
   const [sims, setSims] = useState<Simulation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   // локальное состояние полей создания симуляции — по каждому сироте
   const [simTitle, setSimTitle] = useState<Record<string, string>>({});
@@ -73,6 +78,17 @@ export default function OrphansPage() {
       case 'Saved': return 'Сохранена';
       case 'Deleted': return 'Удалена';
       default: return status;
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteConfirm) return;
+    try {
+      await decideOrphan(deleteConfirm, "Delete");
+      await reload();
+      setDeleteConfirm(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Ошибка при удалении программы');
     }
   };
 
@@ -197,14 +213,7 @@ export default function OrphansPage() {
                         <Button
                           variant="outlined"
                           color="error"
-                          onClick={async () => {
-                            try {
-                              await decideOrphan(o.id, "Delete");
-                              await reload();
-                            } catch (err) {
-                              setError(err instanceof Error ? err.message : 'Ошибка при удалении программы');
-                            }
-                          }}
+                          onClick={() => setDeleteConfirm(o.id)}
                           disabled={o.status === "Deleted"}
                           size="small"
                         >
@@ -294,6 +303,21 @@ export default function OrphansPage() {
           </Grid>
         )}
       </Grid>
+
+      <Dialog open={Boolean(deleteConfirm)} onClose={() => setDeleteConfirm(null)} maxWidth="xs" fullWidth>
+        <DialogTitle>Удаление программы-сироты</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" sx={{ mt: 2 }}>
+            Вы уверены, что хотите удалить эту программу-сироту? Это действие нельзя отменить.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteConfirm(null)}>Отмена</Button>
+          <Button variant="contained" color="error" onClick={handleDeleteConfirm}>
+            Удалить
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
