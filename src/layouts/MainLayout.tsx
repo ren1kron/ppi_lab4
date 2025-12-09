@@ -18,6 +18,7 @@ import RoleBadge from "@components/RoleBadge";
 import { useAuth } from "@auth/useAuth";
 import { appRoutes } from "../routes";
 import { useEffect } from "react";
+import { MatrixBackground } from "@components/MatrixBackground";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
     const location = useLocation();
@@ -49,22 +50,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     return (
         <Box sx={{ display: "flex", minHeight: '100vh' }}>
             {/* Matrix Background Effect */}
-            <Box
-                sx={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: `
-            linear-gradient(45deg, rgba(10,10,10,0.95) 0%, rgba(26,26,26,0.95) 100%),
-            url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="matrix" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><text x="0" y="15" fill="rgba(0,255,65,0.03)" font-family="monospace" font-size="12">01</text></pattern></defs><rect width="100" height="100" fill="url(%23matrix)"/></svg>')
-          `,
-                    opacity: 0.4,
-                    zIndex: -1,
-                    animation: "matrixScroll 20s linear infinite"
-                }}
-            />
+            <MatrixBackground />
 
             <AppBar
                 position="fixed"
