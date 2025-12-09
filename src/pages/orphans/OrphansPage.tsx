@@ -181,7 +181,14 @@ export default function OrphansPage() {
                         <Button
                           variant="outlined"
                           color="success"
-                          onClick={() => void decideOrphan(o.id, "Save").then(reload)}
+                          onClick={async () => {
+                            try {
+                              await decideOrphan(o.id, "Save");
+                              await reload();
+                            } catch (err) {
+                              setError(err instanceof Error ? err.message : 'Ошибка при сохранении программы');
+                            }
+                          }}
                           disabled={o.status === "Saved"}
                           size="small"
                         >
@@ -190,7 +197,14 @@ export default function OrphansPage() {
                         <Button
                           variant="outlined"
                           color="error"
-                          onClick={() => void decideOrphan(o.id, "Delete").then(reload)}
+                          onClick={async () => {
+                            try {
+                              await decideOrphan(o.id, "Delete");
+                              await reload();
+                            } catch (err) {
+                              setError(err instanceof Error ? err.message : 'Ошибка при удалении программы');
+                            }
+                          }}
                           disabled={o.status === "Deleted"}
                           size="small"
                         >
@@ -234,11 +248,14 @@ export default function OrphansPage() {
                         </Stack>
                         <Button
                           variant="contained"
-                          onClick={() =>
-                            void createPersonalSimulation(o.id, getTitle(o.id), getRes(o.id)).then(
-                              reload
-                            )
-                          }
+                          onClick={async () => {
+                            try {
+                              await createPersonalSimulation(o.id, getTitle(o.id), getRes(o.id));
+                              await reload();
+                            } catch (err) {
+                              setError(err instanceof Error ? err.message : 'Ошибка при создании симуляции');
+                            }
+                          }}
                           disabled={o.status !== "Saved" || Boolean(o.simulationId)}
                           fullWidth
                         >

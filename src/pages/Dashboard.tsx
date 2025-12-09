@@ -128,7 +128,16 @@ export default function Dashboard() {
                 <Button
                   variant="contained"
                   fullWidth
-                  onClick={() => kernelDetectGlitch({ title, description: desc, massImpact: mass })}
+                  onClick={async () => {
+                    try {
+                      await kernelDetectGlitch({ title, description: desc, massImpact: mass });
+                      setTitle("Глитч текстуры");
+                      setDesc("Рябь стен");
+                      setMass(false);
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : 'Ошибка при создании тикета');
+                    }
+                  }}
                 >
                   Создать тикет
                 </Button>
@@ -164,7 +173,15 @@ export default function Dashboard() {
                 <Button
                   variant="contained"
                   fullWidth
-                  onClick={() => kernelDetectCandidate(candName, dissent)}
+                  onClick={async () => {
+                    try {
+                      await kernelDetectCandidate(candName, dissent);
+                      setCandName("Subject XYZ-777");
+                      setDissent(8.6);
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : 'Ошибка при создании досье');
+                    }
+                  }}
                 >
                   Создать досье
                 </Button>

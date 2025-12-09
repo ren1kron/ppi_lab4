@@ -168,7 +168,14 @@ export default function ReportsPage() {
                         <CardActions>
                           <Button
                             size="small"
-                            onClick={() => void simulationReport(s.id).then(reload)}
+                            onClick={async () => {
+                              try {
+                                await simulationReport(s.id);
+                                await reload();
+                              } catch (err) {
+                                setError(err instanceof Error ? err.message : 'Ошибка при обновлении отчета');
+                              }
+                            }}
                           >
                             Обновить отчёт
                           </Button>
