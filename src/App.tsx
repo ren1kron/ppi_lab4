@@ -4,6 +4,7 @@ import MainLayout from "@layouts/MainLayout";
 import AuthProvider from "@auth/AuthProvider";
 import LoginPage from "@auth/LoginPage";
 import { useAuth } from "@auth/useAuth";
+import "./styles/global.css";
 
 function AppContent() {
   const { isAuthenticated, login } = useAuth();
