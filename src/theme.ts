@@ -91,15 +91,24 @@ export const theme = createTheme({
           fontWeight: 600,
           borderRadius: 8,
           transition: "all 0.3s ease",
+          color: "#00ff41",
           "&:hover": {
             transform: "translateY(-2px)",
             boxShadow: "0 5px 15px rgba(0, 255, 65, 0.4)"
+          },
+          "&:disabled": {
+            color: "#666666",
+            backgroundColor: "rgba(0, 255, 65, 0.1)"
           }
         },
         contained: {
           background: "linear-gradient(45deg, #00ff41 0%, #00e5ff 100%)",
           color: "#000",
-          fontWeight: 700
+          fontWeight: 700,
+          "&:disabled": {
+            background: "linear-gradient(45deg, #666666 0%, #555555 100%)",
+            color: "#999999"
+          }
         },
         outlined: {
           borderColor: "#00ff41",
@@ -107,6 +116,10 @@ export const theme = createTheme({
           "&:hover": {
             borderColor: "#00e5ff",
             backgroundColor: "rgba(0, 229, 255, 0.1)"
+          },
+          "&:disabled": {
+            borderColor: "#666666",
+            color: "#666666"
           }
         }
       }

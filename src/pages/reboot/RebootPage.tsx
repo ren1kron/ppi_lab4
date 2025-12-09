@@ -152,7 +152,7 @@ export default function RebootPage() {
         <Card>
           <CardContent>
             <Typography variant="h6">UC-304: Финальное интервью</Typography>
-            <Typography component="div" fontWeight={600}>Избранный:</Typography>
+            <Typography component="div" fontWeight={600} sx={{ color: "#00ff41" }}>Избранный:</Typography>
             <Typography
               component="div"
               sx={{
@@ -201,7 +201,7 @@ export default function RebootPage() {
 
 function getChosenBadgeColors(candidate: TheOneCandidate | null): { bg: string; text: string } {
   if (!candidate) {
-    return { bg: "grey.200", text: "text.primary" };
+    return { bg: "grey.900", text: "common.white" };
   }
 
   const probability = candidate.probabilityOfSuccess;
