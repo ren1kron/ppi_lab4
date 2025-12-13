@@ -480,27 +480,13 @@ export default function CandidatesPage() {
                               }}
                             />
                           </Stack>
+                          {c.dissentIndex >= 9.5 && (
+                            <Typography variant="caption" fontWeight="bold">
+                              ТРЕБУЕТСЯ КАРАНТИН (UC-201 АЛЬТ.)
+                            </Typography>
+                          )}
                         </Alert>
                       </Box>
-                      
-                      {c.dissentIndex >= 9.5 && (
-                          <>
-                            <Alert
-                                severity="error"
-                                icon={<Warning />}
-                                sx={{
-                                  mb: 2,
-                                  background: 'rgba(244, 67, 54, 0.1)',
-                                  border: '1px solid rgba(244, 67, 54, 0.3)',
-                                  fontFamily: "'Share Tech Mono', monospace"
-                                }}
-                            >
-                              <Typography variant="caption" fontWeight="bold">
-                                ⚠️ ТРЕБУЕТСЯ КАРАНТИН (UC-201 АЛЬТ.)
-                              </Typography>
-                            </Alert>
-                          </>
-                      )}
 
                       {forecast && forecast.candidateId === c.id && (
                           <>
