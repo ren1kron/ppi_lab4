@@ -363,7 +363,9 @@ export default function CandidatesPage() {
                         flexDirection: 'column',
                         background: "linear-gradient(145deg, rgba(26,26,26,0.9) 0%, rgba(42,42,42,0.9) 100%)",
                         backdropFilter: "blur(10px)",
-                        border: "1px solid rgba(0, 255, 65, 0.3)",
+                        border: c.dissentIndex >= 9.5 
+                          ? "1px solid rgba(244, 67, 54, 0.5)" 
+                          : "1px solid rgba(0, 255, 65, 0.3)",
                         position: 'relative',
                         overflow: 'hidden',
                         '&::before': {
@@ -373,12 +375,16 @@ export default function CandidatesPage() {
                           left: 0,
                           right: 0,
                           height: '2px',
-                          background: 'linear-gradient(90deg, transparent, #00ff41, transparent)',
+                          background: c.dissentIndex >= 9.5
+                            ? 'linear-gradient(90deg, transparent, #f44336, transparent)'
+                            : 'linear-gradient(90deg, transparent, #00ff41, transparent)',
                           animation: 'scanLine 3s linear infinite'
                         },
                         '&:hover': {
-                          borderColor: '#00e5ff',
-                          boxShadow: '0 8px 30px rgba(0, 229, 255, 0.3)',
+                          borderColor: c.dissentIndex >= 9.5 ? '#f44336' : '#00e5ff',
+                          boxShadow: c.dissentIndex >= 9.5 
+                            ? '0 8px 30px rgba(244, 67, 54, 0.3)' 
+                            : '0 8px 30px rgba(0, 229, 255, 0.3)',
                           transform: 'translateY(-4px)'
                         },
                         transition: 'all 0.3s ease'
@@ -431,43 +437,56 @@ export default function CandidatesPage() {
                         </Typography>
                       </Box>
 
-                      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ fontFamily: "'Share Tech Mono', monospace" }}
-                        >
-                          ИНДЕКС ДИССИДЕНТСТВА
-                        </Typography>
-                        <Chip
-                            label={`${c.dissentIndex.toFixed(1)} (${getDissentLabel(c.dissentIndex)})`}
-                            color={getDissentColor(c.dissentIndex) as any}
-                            size="small"
-                            variant="outlined"
+                      {/* Индекс десседенста */}
+                      <Box mb={2}>
+                        <Alert
+                            severity={c.dissentIndex >= 9.5 ? "error" : c.dissentIndex >= 7.0 ? "warning" : "info"}
+                            icon={c.dissentIndex >= 9.5 ? <Warning /> : undefined}
                             sx={{
-                              fontFamily: "'Share Tech Mono', monospace",
-                              fontWeight: 600,
-                              borderWidth: '2px'
+                              background: c.dissentIndex >= 9.5 
+                                ? 'rgba(244, 67, 54, 0.1)' 
+                                : c.dissentIndex >= 7.0 
+                                  ? 'rgba(255, 152, 0, 0.1)' 
+                                  : 'rgba(33, 150, 243, 0.1)',
+                              border: c.dissentIndex >= 9.5 
+                                ? '1px solid rgba(244, 67, 54, 0.3)' 
+                                : c.dissentIndex >= 7.0 
+                                  ? '1px solid rgba(255, 152, 0, 0.3)' 
+                                  : '1px solid rgba(33, 150, 243, 0.3)',
+                              fontFamily: "'Share Tech Mono', monospace"
                             }}
-                        />
-                      </Stack>
-
-                      {c.dissentIndex >= 9.5 && (
-                          <Alert
-                              severity="error"
-                              icon={<Warning />}
-                              sx={{
-                                mb: 2,
-                                background: 'rgba(244, 67, 54, 0.1)',
-                                border: '1px solid rgba(244, 67, 54, 0.3)',
-                                fontFamily: "'Share Tech Mono', monospace"
+                        >
+                          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+                            <Typography 
+                              variant="body2" 
+                              color="text.secondary" 
+                              sx={{ 
+                                fontFamily: "'Share Tech Mono', monospace",
+                                fontWeight: 600
                               }}
-                          >
-                            <Typography variant="caption" fontWeight="bold">
-                              ⚠️ ТРЕБУЕТСЯ КАРАНТИН (UC-201 АЛЬТ.)
+                            >
+                              ИНДЕКС ДИССИДЕНТСТВА:
                             </Typography>
-                          </Alert>
-                      )}
+                            <Chip
+                              label={`${c.dissentIndex.toFixed(1)} (${getDissentLabel(c.dissentIndex)})`}
+                              color={getDissentColor(c.dissentIndex) as any}
+                              size="small"
+                              variant="outlined"
+                              sx={{
+                                fontFamily: "'Share Tech Mono', monospace",
+                                fontWeight: 600,
+                                borderWidth: '2px',
+                                fontSize: '0.875rem'
+                              }}
+                            />
+                          </Stack>
+                          {c.dissentIndex >= 9.5 && (
+                            <Typography variant="caption" fontWeight="bold">
+                              ТРЕБУЕТСЯ КАРАНТИН (UC-201 АЛЬТ.)
+                            </Typography>
+                          )}
+                        </Alert>
+                      </Box>
 
                       {forecast && forecast.candidateId === c.id && (
                           <>
