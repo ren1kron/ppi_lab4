@@ -568,27 +568,9 @@ export default function TicketsPage() {
                                   </MenuItem>
                                   <MenuItem value="MECHANIC" sx={{ fontFamily: "'Share Tech Mono', monospace" }}>Механику</MenuItem>
                                   <MenuItem value="AGENT_SMITH" sx={{ fontFamily: "'Share Tech Mono', monospace" }}>Агенту Смиту</MenuItem>
+                                  <MenuItem value="ARCHITECT" sx={{ fontFamily: "'Share Tech Mono', monospace" }}>Архитектору</MenuItem>
                                 </Select>
                               </FormControl>
-                              <Button
-                                  variant="outlined"
-                                  onClick={() => {
-                                    if (!assignTo) {
-                                      setError("Необходимо выбрать, кому назначить тикет");
-                                      return;
-                                    }
-                                    handleAction(
-                                        () => monitorClassifyAndAssign(selected.id, severity, assignTo as Role),
-                                        "classify",
-                                        "Тикет классифицирован и назначен"
-                                    );
-                                  }}
-                                  disabled={actionLoading === "classify" || !assignTo}
-                                  startIcon={<Assignment />}
-                                  title={!assignTo ? "Необходимо выбрать, кому назначить тикет" : ""}
-                              >
-                                {actionLoading === "classify" ? "ОБРАБОТКА..." : "ПРИМЕНИТЬ"}
-                              </Button>
                             </Stack>
                           </Box>
                       )}
@@ -634,27 +616,28 @@ export default function TicketsPage() {
                         ДОСТУПНЫЕ ДЕЙСТВИЯ
                       </Typography>
 
+                      {/* кнопка эскалировать */}
                       <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
                         {/* UC-106 — эскалация Архитектору (MONITOR) */}
-                        {canEscalate && (
+                        {canClassify && (
                             <Button
                                 variant="outlined"
-                                color="warning"
-                                onClick={() =>
-                                    handleAction(
-                                        () => escalateToArchitect(selected.id, note),
-                                        "escalate",
-                                        "Тикет эскалирован Архитектору"
-                                    )
-                                }
-                                disabled={actionLoading === "escalate"}
-                                startIcon={<PriorityHigh />}
-                                sx={{
-                                  fontFamily: "'Rajdhani', sans-serif",
-                                  fontWeight: 600
+                                onClick={() => {
+                                  if (!assignTo) {
+                                    setError("Необходимо выбрать, кому назначить тикет");
+                                    return;
+                                  }
+                                  handleAction(
+                                      () => monitorClassifyAndAssign(selected.id, severity, assignTo as Role),
+                                      "classify",
+                                      "Тикет классифицирован и назначен"
+                                  );
                                 }}
+                                disabled={actionLoading === "classify" || !assignTo}
+                                startIcon={<Assignment />}
+                                title={!assignTo ? "Необходимо выбрать, кому назначить тикет" : ""}
                             >
-                              {actionLoading === "escalate" ? "ЭСКАЛАЦИЯ..." : "ЭСКАЛИРОВАТЬ (UC-106)"}
+                              {actionLoading === "classify" ? "ОБРАБОТКА..." : "ПРИМЕНИТЬ"}
                             </Button>
                         )}
 
