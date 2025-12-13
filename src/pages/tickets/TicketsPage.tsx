@@ -568,6 +568,7 @@ export default function TicketsPage() {
                                   </MenuItem>
                                   <MenuItem value="MECHANIC" sx={{ fontFamily: "'Share Tech Mono', monospace" }}>Механику</MenuItem>
                                   <MenuItem value="AGENT_SMITH" sx={{ fontFamily: "'Share Tech Mono', monospace" }}>Агенту Смиту</MenuItem>
+                                  
                                 </Select>
                               </FormControl>
                               <Button
@@ -634,29 +635,11 @@ export default function TicketsPage() {
                         ДОСТУПНЫЕ ДЕЙСТВИЯ
                       </Typography>
 
+                      {/* кнопка эскалировать */}
                       <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
                         {/* UC-106 — эскалация Архитектору (MONITOR) */}
-                        {canEscalate && (
-                            <Button
-                                variant="outlined"
-                                color="warning"
-                                onClick={() =>
-                                    handleAction(
-                                        () => escalateToArchitect(selected.id, note),
-                                        "escalate",
-                                        "Тикет эскалирован Архитектору"
-                                    )
-                                }
-                                disabled={actionLoading === "escalate"}
-                                startIcon={<PriorityHigh />}
-                                sx={{
-                                  fontFamily: "'Rajdhani', sans-serif",
-                                  fontWeight: 600
-                                }}
-                            >
-                              {actionLoading === "escalate" ? "ЭСКАЛАЦИЯ..." : "ЭСКАЛИРОВАТЬ (UC-106)"}
-                            </Button>
-                        )}
+                        
+                        
 
                         {/* UC-107 — решение Архитектора (ARCHITECT) */}
                         {canDecide && (
