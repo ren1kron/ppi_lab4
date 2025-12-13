@@ -437,42 +437,69 @@ export default function CandidatesPage() {
                         </Typography>
                       </Box>
 
-                      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ fontFamily: "'Share Tech Mono', monospace" }}
-                        >
-                          ИНДЕКС ДИССИДЕНТСТВА
-                        </Typography>
-                        <Chip
-                            label={`${c.dissentIndex.toFixed(1)} (${getDissentLabel(c.dissentIndex)})`}
-                            color={getDissentColor(c.dissentIndex) as any}
-                            size="small"
-                            variant="outlined"
+                      {/* Индекс десседенста */}
+                      <Box mb={2}>
+                        <Alert
+                            severity={c.dissentIndex >= 9.5 ? "error" : c.dissentIndex >= 7.0 ? "warning" : "info"}
+                            icon={c.dissentIndex >= 9.5 ? <Warning /> : undefined}
                             sx={{
-                              fontFamily: "'Share Tech Mono', monospace",
-                              fontWeight: 600,
-                              borderWidth: '2px'
+                              background: c.dissentIndex >= 9.5 
+                                ? 'rgba(244, 67, 54, 0.1)' 
+                                : c.dissentIndex >= 7.0 
+                                  ? 'rgba(255, 152, 0, 0.1)' 
+                                  : 'rgba(33, 150, 243, 0.1)',
+                              border: c.dissentIndex >= 9.5 
+                                ? '1px solid rgba(244, 67, 54, 0.3)' 
+                                : c.dissentIndex >= 7.0 
+                                  ? '1px solid rgba(255, 152, 0, 0.3)' 
+                                  : '1px solid rgba(33, 150, 243, 0.3)',
+                              fontFamily: "'Share Tech Mono', monospace"
                             }}
-                        />
-                      </Stack>
+                        >
+                          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+                            <Typography 
+                              variant="body2" 
+                              color="text.secondary" 
+                              sx={{ 
+                                fontFamily: "'Share Tech Mono', monospace",
+                                fontWeight: 600
+                              }}
+                            >
+                              ИНДЕКС ДИССИДЕНТСТВА:
+                            </Typography>
+                            <Chip
+                              label={`${c.dissentIndex.toFixed(1)} (${getDissentLabel(c.dissentIndex)})`}
+                              color={getDissentColor(c.dissentIndex) as any}
+                              size="small"
+                              variant="outlined"
+                              sx={{
+                                fontFamily: "'Share Tech Mono', monospace",
+                                fontWeight: 600,
+                                borderWidth: '2px',
+                                fontSize: '0.875rem'
+                              }}
+                            />
+                          </Stack>
+                        </Alert>
+                      </Box>
                       
                       {c.dissentIndex >= 9.5 && (
-                          <Alert
-                              severity="error"
-                              icon={<Warning />}
-                              sx={{
-                                mb: 2,
-                                background: 'rgba(244, 67, 54, 0.1)',
-                                border: '1px solid rgba(244, 67, 54, 0.3)',
-                                fontFamily: "'Share Tech Mono', monospace"
-                              }}
-                          >
-                            <Typography variant="caption" fontWeight="bold">
-                              ⚠️ ТРЕБУЕТСЯ КАРАНТИН (UC-201 АЛЬТ.)
-                            </Typography>
-                          </Alert>
+                          <>
+                            <Alert
+                                severity="error"
+                                icon={<Warning />}
+                                sx={{
+                                  mb: 2,
+                                  background: 'rgba(244, 67, 54, 0.1)',
+                                  border: '1px solid rgba(244, 67, 54, 0.3)',
+                                  fontFamily: "'Share Tech Mono', monospace"
+                                }}
+                            >
+                              <Typography variant="caption" fontWeight="bold">
+                                ⚠️ ТРЕБУЕТСЯ КАРАНТИН (UC-201 АЛЬТ.)
+                              </Typography>
+                            </Alert>
+                          </>
                       )}
 
                       {forecast && forecast.candidateId === c.id && (
