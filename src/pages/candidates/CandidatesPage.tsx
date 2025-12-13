@@ -363,7 +363,9 @@ export default function CandidatesPage() {
                         flexDirection: 'column',
                         background: "linear-gradient(145deg, rgba(26,26,26,0.9) 0%, rgba(42,42,42,0.9) 100%)",
                         backdropFilter: "blur(10px)",
-                        border: "1px solid rgba(0, 255, 65, 0.3)",
+                        border: c.dissentIndex >= 9.5 
+                          ? "1px solid rgba(244, 67, 54, 0.5)" 
+                          : "1px solid rgba(0, 255, 65, 0.3)",
                         position: 'relative',
                         overflow: 'hidden',
                         '&::before': {
@@ -373,12 +375,16 @@ export default function CandidatesPage() {
                           left: 0,
                           right: 0,
                           height: '2px',
-                          background: 'linear-gradient(90deg, transparent, #00ff41, transparent)',
+                          background: c.dissentIndex >= 9.5
+                            ? 'linear-gradient(90deg, transparent, #f44336, transparent)'
+                            : 'linear-gradient(90deg, transparent, #00ff41, transparent)',
                           animation: 'scanLine 3s linear infinite'
                         },
                         '&:hover': {
-                          borderColor: '#00e5ff',
-                          boxShadow: '0 8px 30px rgba(0, 229, 255, 0.3)',
+                          borderColor: c.dissentIndex >= 9.5 ? '#f44336' : '#00e5ff',
+                          boxShadow: c.dissentIndex >= 9.5 
+                            ? '0 8px 30px rgba(244, 67, 54, 0.3)' 
+                            : '0 8px 30px rgba(0, 229, 255, 0.3)',
                           transform: 'translateY(-4px)'
                         },
                         transition: 'all 0.3s ease'
@@ -451,7 +457,7 @@ export default function CandidatesPage() {
                             }}
                         />
                       </Stack>
-
+                      
                       {c.dissentIndex >= 9.5 && (
                           <Alert
                               severity="error"
